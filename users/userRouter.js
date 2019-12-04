@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
 
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts',validateUserId, (req, res) => {
   // do your magic!
   const post = req.body
   if(!post){
@@ -71,7 +71,7 @@ router.get('/', (req, res) => {
   });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validateUserId, (req, res) => {
   // do your magic!
   const id = req.params.id
 
@@ -95,7 +95,7 @@ router.get('/:id', (req, res) => {
 
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts',validateUserId, (req, res) => {
   // do your magic!
   const id = req.params.id
 
@@ -118,7 +118,7 @@ router.get('/:id/posts', (req, res) => {
 
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id',validateUserId, (req, res) => {
   // do your magic!
   const id = req.params.id
 
@@ -136,7 +136,7 @@ router.delete('/:id', (req, res) => {
     })
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, (req, res) => {
   // do your magic!
   const changes = req.body
   const id = req.params.id
@@ -162,6 +162,13 @@ router.put('/:id', (req, res) => {
 
 function validateUserId(req, res, next) {
   // do your magic!
+  const id = Number(req.params.id || 0);
+    if(id){
+        req.user = id
+        next();
+    } else {
+    res.status(400).json({ message: "Invalid user ID" })
+    }
 }
 
 function validateUser(req, res, next) {
