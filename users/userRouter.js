@@ -52,24 +52,110 @@ router.post('/:id/posts', (req, res) => {
 
 });
 
+
+
+
+
 router.get('/', (req, res) => {
   // do your magic!
+  userDb.get()
+  .then(users => {
+    res.status(200).json(users);
+  })
+  .catch(error => {
+  
+    console.log(error);
+    res.status(500).json({
+      message: "Error retrieving the users"
+    });
+  });
 });
 
 router.get('/:id', (req, res) => {
   // do your magic!
+  const id = req.params.id
+
+  userDb
+  .getById(id)
+
+  .then(user => {
+      if(user) {
+          res.status(200).json(user);
+      }
+      res.status(404).json({ error: "id not returned" })
+    })
+    .catch(error => {
+   
+      console.log(error);
+      res.status(500).json({
+        message: "Error retrieving the db"
+      });
+    });
+
+
 });
 
 router.get('/:id/posts', (req, res) => {
   // do your magic!
+  const id = req.params.id
+
+  postDb
+  .getById(id)
+
+  .then(user => {
+      if(user) {
+          res.status(200).json(user);
+      }
+      res.status(404).json({ error: "id not returned" })
+    })
+    .catch(error => {
+   
+      console.log(error);
+      res.status(500).json({
+        message: "Error retrieving the db"
+      });
+    });
+
 });
 
 router.delete('/:id', (req, res) => {
   // do your magic!
+  const id = req.params.id
+
+    userDb.remove(id)
+    .then(count => {
+        if (count > 0) {
+            res.status(200).json({ message: "The user has been deleted" })  
+        }
+        res.status(404).json({ message: "user not found" });
+    })
+    .catch(error => {
+        res.status(500).json({
+            message: "Error removing the post"
+        })
+    })
 });
 
 router.put('/:id', (req, res) => {
   // do your magic!
+  const changes = req.body
+  const id = req.params.id
+  
+    userDb
+    .update(id,changes)
+    .then(edit => {
+        if (edit) {
+            res.status(201).json({...changes, id: id});
+        }
+        res.status(404).json({ error: "user not found" })
+      })
+      .catch(error => {
+        // log error to database
+        console.log(error);
+        res.status(500).json({
+          message: "Error updating the user"
+        });
+      });
 });
 
 //custom middleware

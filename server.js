@@ -11,5 +11,5 @@ server.get('/', (req, res) => {
 //custom middleware
 
 function logger(req, res, next) {}
-server.use("/user", userRouter)
+server.use("/api/user", userRouter)
 module.exports = server;
