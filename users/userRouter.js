@@ -95,18 +95,19 @@ router.get('/:id', validateUserId, (req, res) => {
 
 });
 
-router.get('/:id/posts',validateUserId, (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
   // do your magic!
   const id = req.params.id
 
-  postDb
-  .getById(id)
+  userDb
+  .getUserPosts(id)
 
   .then(user => {
-      if(user) {
+        if(user) {
           res.status(200).json(user);
-      }
-      res.status(404).json({ error: "id not returned" })
+        }
+        res.status(404).json({ error: "id not returned" })
+        
     })
     .catch(error => {
    
@@ -162,8 +163,9 @@ router.put('/:id', validateUserId, validateUser, (req, res) => {
 
 function validateUserId(req, res, next) {
   // do your magic!
+ 
   const id = Number(req.params.id || 0);
-    if(id){
+     if(id){
         req.user = id
         next();
     } else {
