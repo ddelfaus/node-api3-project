@@ -9,13 +9,13 @@ const router = express.Router();
 router.use(express.json())
 
 
-router.post('/', (req, res) => {
+router.post('/', validateUser, (req, res) => {
   // do your magic!
 
   const user = req.body
-  if(!user){
-    res.status(400).json({error: "Please provide username."})
-  }
+  // if(!user){
+  //   res.status(400).json({error: "Please provide username."})
+  // }
   userDb
   .insert(user)
   .then(user => {
@@ -31,12 +31,12 @@ router.post('/', (req, res) => {
 
 });
 
-router.post('/:id/posts',validateUserId, (req, res) => {
+router.post('/:id/posts',validateUserId, validatePost, (req, res) => {
   // do your magic!
   const post = req.body
-  if(!post){
-    res.status(400).json({error: "Please provide post."})
-  }
+  // if(!post){
+  //   res.status(400).json({error: "Please provide post."})
+  // }
   postDb
   .insert(post)
   .then(post => {
@@ -136,7 +136,7 @@ router.delete('/:id',validateUserId, (req, res) => {
     })
 });
 
-router.put('/:id', validateUserId, (req, res) => {
+router.put('/:id', validateUserId, validateUser, (req, res) => {
   // do your magic!
   const changes = req.body
   const id = req.params.id
@@ -173,10 +173,32 @@ function validateUserId(req, res, next) {
 
 function validateUser(req, res, next) {
   // do your magic!
+  if(!req.body){
+    res.status(400).json({ message: "Missing user data" })
+}
+  if(!isNaN(req.body.name)){
+    res.status(400).json({ message: "Missing required name " })
+}
+if(req.body.name === null){
+  res.status(400).json({ message: "Missing required name field" })
+}
+next();
 }
 
 function validatePost(req, res, next) {
   // do your magic!
+  if (!req.body) {
+    res.status(400).json({ message: "missing the post data" });
+} 
+if (!req.body.text) {
+    res.status(400).json({ message: "missing the required text data" });
+} 
+if(!req.body.user_id){
+    res.status(400).json({ message: "missing the required user_id data" });
+} 
+else {
+    next();
+}
 }
 
 module.exports = router;
