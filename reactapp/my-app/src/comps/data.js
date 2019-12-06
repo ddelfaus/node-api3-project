@@ -1,18 +1,19 @@
 import React, {useState, useEffect} from "react"
 import axios from "axios"
+import DataCard from "../comps/dataCard"
 
 
 
-
-function Data() {
-    const [user, setUsers] = useState([]);
+function Data(props) {
+    const [people, setPeople] = useState([]);
 
     useEffect(() => {
         axios
-        .get(`https://cors-anywhere.herokuapp.com/https://tech-stuff-api.herokuapp.com/api/users/`)
+        .get(`https://cors-anywhere.herokuapp.com/https://davtest2.herokuapp.com/api/user`)
         .then(res => {
             console.log(res, "apistuff")
-           setUsers(res)
+           setPeople(res.data)
+           console.log(people)
             
         })
         .catch(err => {
@@ -23,6 +24,10 @@ function Data() {
     return (
         <>
             <h1> Ello!</h1>
+
+            {people.map(item => (
+                <DataCard key={item.id} character ={item}/>
+            ))}
         </>
 
     )
